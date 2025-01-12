@@ -1,0 +1,23 @@
+# Ignorowanie folderów tymczasowych
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Ignorowanie plików systemowych
+.DS_Store
+Thumbs.db
+
+# Ignorowanie plików logów i debugowania
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorowanie lokalnych plików konfiguracyjnych
+.env
+.env.local
+.env.*.local
+
+# Ignorowanie plików TypeScript
+*.tsbuildinfo
