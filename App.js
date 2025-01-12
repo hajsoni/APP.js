@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; // Import ikon
+import SecureStore from 'expo-secure-store';
 import Logowanie from './screens/logowanie';
 import Home from './screens/Home';
 import MyOffers from './screens/MyOffers';
 import AddOffer from './screens/AddOffer';
 import MyProfile from './screens/MyProfile';
 import Bucket from './screens/Bucket';
+import Register from './screens/Register';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -64,17 +66,32 @@ function DrawerNavigation() {
   );
 }
 
-
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Sprawdzamy, czy użytkownik jest już zalogowany
+  useEffect(() => {
+    const checkLogin = async () => {
+      const email = await SecureStore.getItemAsync('userEmail');
+      const password = await SecureStore.getItemAsync('userPassword');
+      if (email && password) {
+        setIsLoggedIn(true);
+      }
+    };
+
+    checkLogin();
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isLoggedIn ? (
-          <Stack.Screen name="Logowanie">
-            {(props) => <Logowanie {...props} setIsLoggedIn={setIsLoggedIn} />}
-          </Stack.Screen>
+          <>
+            <Stack.Screen name="Logowanie">
+              {(props) => <Logowanie {...props} setIsLoggedIn={setIsLoggedIn} />}
+            </Stack.Screen>
+            <Stack.Screen name="Register" component={Register} />
+          </>
         ) : (
           <Stack.Screen name="Drawer" component={DrawerNavigation} />
         )}

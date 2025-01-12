@@ -2,34 +2,34 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
-export default function Logowanie({ setIsLoggedIn, navigation }) {
+
+
+
+export default function Register({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-const handleLogin = async () => {
-  if (!email || !password) {
-    Alert.alert('Error', 'Please fill in all fields');
-    return;
-  }
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
 
-  try {
-    const storedEmail = await SecureStore.getItemAsync('userEmail');
-    const storedPassword = await SecureStore.getItemAsync('userPassword');
-
-    console.log('Odczytany email:', storedEmail); // Debug
-    console.log('Odczytane hasło:', storedPassword); // Debug
-
-    if (email === storedEmail && password === storedPassword) {
-      setIsLoggedIn(true);
-      Alert.alert('Success', 'Logged in successfully');
-    } else {
-      Alert.alert('Error', 'Invalid email or password');
+  const handleRegister = async () => {
+    if (!email || !password || !name || !surname) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
     }
-  } catch (error) {
-    console.log('Error reading data:', error); // Debug
-    Alert.alert('Error', 'Failed to read data');
-  }
-};
 
+    try {
+      await SecureStore.setItemAsync('userEmail', email);
+      await SecureStore.setItemAsync('userPassword', password);
+      await SecureStore.setItemAsync('userName', name);
+      await SecureStore.setItemAsync('userSurname', surname);
+
+      Alert.alert('Success', 'Account created');
+      navigation.navigate('Logowanie');
+    } catch (error) {
+      console.log('Błąd podczas zapisu w SecureStore:', error);
+      Alert.alert('Error', 'Failed to save data');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -49,15 +49,23 @@ const handleLogin = async () => {
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>LOG IN</Text>
+      <TextInput
+        placeholder="NAME"
+        placeholderTextColor="#fff"
+        style={styles.input}
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        placeholder="SURNAME"
+        placeholderTextColor="#fff"
+        style={styles.input}
+        value={surname}
+        onChangeText={setSurname}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>REGISTER</Text>
       </TouchableOpacity>
-      <Text style={styles.text}>
-        If you don't have an account{' '}
-        <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
-          REGISTER
-        </Text>
-      </Text>
     </View>
   );
 }
@@ -91,13 +99,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
-  },
-  text: {
-    color: '#fff',
-  },
-  link: {
-    color: '#00ff00',
     fontWeight: 'bold',
   },
 });

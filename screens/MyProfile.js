@@ -1,16 +1,78 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 export default function MyProfile() {
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedName = await SecureStore.getItemAsync('userName');
+        const storedSurname = await SecureStore.getItemAsync('userSurname');
+        const storedEmail = await SecureStore.getItemAsync('userEmail');
+        const storedPassword = await SecureStore.getItemAsync('userPassword');
+
+        setName(storedName || '');
+        setSurname(storedSurname || '');
+        setEmail(storedEmail || '');
+        setPassword(storedPassword || '');
+      } catch (error) {
+        console.log('Error fetching profile data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      await SecureStore.setItemAsync('userName', name);
+      await SecureStore.setItemAsync('userSurname', surname);
+      Alert.alert('Success', 'Profile updated successfully');
+    } catch (error) {
+      console.log('Error saving profile data:', error);
+      Alert.alert('Error', 'Failed to save profile data');
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>My Profile</Text>
-      <TextInput placeholder="Name" placeholderTextColor="#fff" style={styles.input} />
-      <TextInput placeholder="Surname" placeholderTextColor="#fff" style={styles.input} />
-      <TextInput placeholder="E-mail" placeholderTextColor="#fff" style={styles.input} />
-      <TextInput placeholder="Password" placeholderTextColor="#fff" secureTextEntry style={styles.input} />
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Save</Text>
+      <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
+      <TextInput
+        value={name}
+        style={styles.input}
+        onChangeText={setName}
+        placeholder="Name"
+        placeholderTextColor="#777"
+      />
+      <TextInput
+        value={surname}
+        style={styles.input}
+        onChangeText={setSurname}
+        placeholder="Surname"
+        placeholderTextColor="#777"
+      />
+      <TextInput
+        value={email}
+        style={styles.input}
+        editable={false}
+        placeholder="E-mail"
+        placeholderTextColor="#777"
+      />
+      <TextInput
+        value={password}
+        style={styles.input}
+        editable={false}
+        secureTextEntry
+        placeholder="Password"
+        placeholderTextColor="#777"
+      />
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
+        <Text style={styles.buttonText}>SAVE</Text>
       </TouchableOpacity>
     </View>
   );
@@ -20,24 +82,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  text: {
-    color: '#fff',
-    fontSize: 18,
-    marginBottom: 20,
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 30,
   },
   input: {
-    backgroundColor: '#1a1a1a',
+    width: '80%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
+    marginBottom: 20,
     color: '#fff',
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 5,
   },
   button: {
+    width: '80%',
     backgroundColor: '#1a531b',
-    padding: 15,
     alignItems: 'center',
+    padding: 10,
+    marginVertical: 20,
     borderRadius: 5,
   },
   buttonText: {
