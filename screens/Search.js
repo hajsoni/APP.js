@@ -3,34 +3,32 @@ import { View, TextInput, StyleSheet, FlatList, Text, TouchableOpacity, Image } 
 import offersData from '../data/offers.json';
 
 export default function Search() {
-  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [priceFrom, setPriceFrom] = useState('');
+  const [priceTo, setPriceTo] = useState('');
+  const [location, setLocation] = useState('');
+  const [category, setCategory] = useState('');
+  const [name, setName] = useState(''); // Dodano pole do filtrowania nazw
 
-  // Łączymy wszystkie oferty w jedną tablicę
   const allOffers = [
     ...offersData.specialOffers,
     ...offersData.saleOffers,
-    ...offersData.myOffers
+    ...offersData.myOffers,
   ];
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const handleSearch = () => {
     setHasSearched(true);
 
-    if (query.trim() === '') {
-      setSearchResults([]);
-      return;
-    }
-
     const filteredResults = allOffers.filter(offer => {
-      const searchLower = query.toLowerCase();
-      return (
-        offer.name.toLowerCase().includes(searchLower) ||
-        offer.description.toLowerCase().includes(searchLower) ||
-        offer.location.toLowerCase().includes(searchLower) ||
-        offer.price.toString().includes(searchLower)
-      );
+      const matchesName = name.trim() === '' || offer.name.toLowerCase().includes(name.toLowerCase());
+      const matchesPrice =
+        (!priceFrom || offer.price >= parseFloat(priceFrom)) &&
+        (!priceTo || offer.price <= parseFloat(priceTo));
+      const matchesLocation = location.trim() === '' || offer.location.toLowerCase().includes(location.toLowerCase());
+      const matchesCategory = category.trim() === '' || offer.category?.toLowerCase().includes(category.toLowerCase());
+
+      return matchesName && matchesPrice && matchesLocation && matchesCategory;
     });
 
     setSearchResults(filteredResults);
@@ -55,21 +53,58 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
+      <View style={styles.filters}>
+        <Text style={styles.filterLabel}>Name</Text>
         <TextInput
-          style={styles.searchInput}
-          placeholder="Search products, locations..."
+          style={styles.filterInput}
+          placeholder="Enter name"
           placeholderTextColor="#666"
-          value={searchQuery}
-          onChangeText={handleSearch}
-          autoFocus={true}
+          value={name}
+          onChangeText={setName}
         />
+        <Text style={styles.filterLabel}>Price</Text>
+        <View style={styles.priceContainer}>
+          <TextInput
+            style={styles.priceInput}
+            placeholder="From"
+            placeholderTextColor="#666"
+            keyboardType="numeric"
+            value={priceFrom}
+            onChangeText={setPriceFrom}
+          />
+          <TextInput
+            style={styles.priceInput}
+            placeholder="To"
+            placeholderTextColor="#666"
+            keyboardType="numeric"
+            value={priceTo}
+            onChangeText={setPriceTo}
+          />
+        </View>
+        <Text style={styles.filterLabel}>Location</Text>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Enter location"
+          placeholderTextColor="#666"
+          value={location}
+          onChangeText={setLocation}
+        />
+        <Text style={styles.filterLabel}>Category</Text>
+        <TextInput
+          style={styles.filterInput}
+          placeholder="Enter category"
+          placeholderTextColor="#666"
+          value={category}
+          onChangeText={setCategory}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Text style={styles.searchButtonText}>SEARCH</Text>
+        </TouchableOpacity>
       </View>
 
-      {hasSearched && searchQuery.trim() !== '' && searchResults.length === 0 ? (
+      {hasSearched && searchResults.length === 0 ? (
         <View style={styles.noResultsContainer}>
-          <Text style={styles.noResultsText}>No results found for "{searchQuery}"</Text>
-          <Text style={styles.noResultsSubText}>Try different keywords or check for typos</Text>
+          <Text style={styles.noResultsText}>No results found</Text>
         </View>
       ) : (
         <FlatList
@@ -77,13 +112,6 @@ export default function Search() {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.resultsList}
-          ListEmptyComponent={
-            !hasSearched && (
-              <View style={styles.initialStateContainer}>
-                <Text style={styles.initialStateText}>Start typing to search</Text>
-              </View>
-            )
-          }
         />
       )}
     </View>
@@ -94,19 +122,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1E2337',
-  },
-  searchContainer: {
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2A305A',
   },
-  searchInput: {
+  filters: {
+    marginBottom: 20,
+  },
+  filterLabel: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  priceInput: {
     backgroundColor: '#2A305A',
     color: '#fff',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    width: '48%',
+  },
+  filterInput: {
+    backgroundColor: '#2A305A',
+    color: '#fff',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    marginBottom: 10,
+  },
+  searchButton: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  searchButtonText: {
+    color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   resultsList: {
     padding: 15,
@@ -156,29 +212,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   noResultsText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  noResultsSubText: {
-    color: '#B8B9C3',
-    fontSize: 14,
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  initialStateContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  initialStateText: {
-    color: '#B8B9C3',
-    fontSize: 16,
-    textAlign: 'center',
   },
 });

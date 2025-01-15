@@ -40,6 +40,9 @@ function BottomTabs() {
          height: 60,
          paddingBottom: 10,
        },
+       tabBarItemStyle: {
+         paddingLeft: 65, // Odstęp od lewej krawędzi
+       },
        tabBarActiveTintColor: '#4CAF50',
        tabBarInactiveTintColor: '#666',
        tabBarIcon: ({ focused, color, size }) => {
@@ -69,6 +72,8 @@ function BottomTabs() {
        },
      })}
    >
+
+
      <Tab.Screen name="Home" component={Home} />
      <Tab.Screen name="All Offers" component={AllOffers} />
      <Tab.Screen name="Add Offer" component={AddOffer} />
@@ -103,7 +108,7 @@ function DrawerNavigation() {
        drawerActiveTintColor: '#4CAF50',
        drawerInactiveTintColor: '#fff',
        drawerLabelStyle: {
-         marginLeft: -20,
+         marginLeft: 30,
        },
      }}
    >
