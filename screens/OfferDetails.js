@@ -1,9 +1,28 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 
 export default function OfferDetails({ route, navigation }) {
   const { offer } = route.params;
+
+  const addToBucket = async () => {
+    try {
+      const currentItems = await SecureStore.getItemAsync('bucketItems');
+      let bucketItems = currentItems ? JSON.parse(currentItems) : [];
+
+      if (!bucketItems.some(item => item.id === offer.id)) {
+        bucketItems.push(offer);
+        await SecureStore.setItemAsync('bucketItems', JSON.stringify(bucketItems));
+        Alert.alert('Success', 'Item added to bucket');
+      } else {
+        Alert.alert('Info', 'This item is already in your bucket');
+      }
+    } catch (error) {
+      console.error('Error adding to bucket:', error);
+      Alert.alert('Error', 'Could not add item to bucket');
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -38,7 +57,7 @@ export default function OfferDetails({ route, navigation }) {
           <Text style={styles.date}>Posted on: {offer.date}</Text>
         </View>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={addToBucket}>
           <Text style={styles.buttonText}>Add to Bucket</Text>
         </TouchableOpacity>
       </View>

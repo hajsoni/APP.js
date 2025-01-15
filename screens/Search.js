@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, FlatList, Text, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import offersData from '../data/offers.json';
 
 export default function Search() {
+  const navigation = useNavigation();
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [priceFrom, setPriceFrom] = useState('');
@@ -35,7 +37,10 @@ export default function Search() {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.offerCard}>
+    <TouchableOpacity
+      style={styles.offerCard}
+      onPress={() => navigation.navigate('OfferDetails', { offer: item })} // Przejście do `OfferDetails`
+    >
       <Image
         source={{ uri: item.image || 'https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image' }}
         style={styles.offerImage}
