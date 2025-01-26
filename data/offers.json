@@ -1,151 +1,184 @@
 {
-    "specialOffers": [
-      {
-        "id": "1",
-        "name": "iPhone 13 Pro",
-        "description": "Nowy, nieużywany telefon",
-        "price": 4299.99,
-        "location": "Warszawa",
-        "image": "https://placeholder.com/iphone13.jpg",
-        "seller": "Jan Kowalski",
-        "date": "2024-01-10",
-        "isSpecial": true
-      },
-      {
-        "id": "2",
-        "name": "MacBook Pro M1",
-        "description": "Stan bardzo dobry, mało używany",
-        "price": 5999.99,
-        "location": "Kraków",
-        "image": "https://placeholder.com/macbook.jpg",
-        "seller": "Anna Nowak",
-        "date": "2024-01-12",
-        "isSpecial": true
-      }
-    ],
-    "saleOffers": [
-      {
-        "id": "3",
-        "name": "Samsung Galaxy S21",
-        "description": "Używany, w dobrym stanie",
-        "price": 2499.99,
-        "location": "Wrocław",
-        "image": "https://placeholder.com/samsung.jpg",
-        "seller": "Piotr Wiśniewski",
-        "date": "2024-01-15",
-        "discount": 20
-      },
-      {
-        "id": "5",
-        "name": "Sony PlayStation 5",
-        "description": "Nowa konsola z dwoma padami",
-        "price": 2799.99,
-        "location": "Poznań",
-        "image": "https://placeholder.com/ps5.jpg",
-        "seller": "Marek Kowalczyk",
-        "date": "2024-01-16",
-        "discount": 15
-      },
-      {
-        "id": "6",
-        "name": "Dell XPS 15",
-        "description": "Laptop dla profesjonalistów",
-        "price": 6499.99,
-        "location": "Łódź",
-        "image": "https://placeholder.com/dell.jpg",
-        "seller": "Tomasz Nowicki",
-        "date": "2024-01-14",
-        "discount": 25
-      }
-    ],
-    "myOffers": [
-      {
-        "id": "4",
-        "name": "iPad Air 2022",
-        "description": "Nowy tablet, na gwarancji",
-        "price": 2799.99,
-        "location": "Gdańsk",
-        "image": "https://placeholder.com/ipad.jpg",
-        "status": "active",
-        "views": 45,
-        "date": "2024-01-08"
-      },
-      {
-        "id": "7",
-        "name": "Monitor LG 32\"",
-        "description": "4K HDR, idealny do gier",
-        "price": 1899.99,
-        "location": "Szczecin",
-        "image": "https://placeholder.com/monitor.jpg",
-        "status": "active",
-        "views": 32,
-        "date": "2024-01-13"
-      },
-      {
-        "id": "8",
-        "name": "Nintendo Switch OLED",
-        "description": "Komplet z grami",
-        "price": 1499.99,
-        "location": "Katowice",
-        "image": "https://placeholder.com/switch.jpg",
-        "status": "active",
-        "views": 67,
-        "date": "2024-01-11"
-      },
-      {
-        "id": "9",
-        "name": "Canon EOS R6",
-        "description": "Aparat mirrorless z obiektywem 24-70mm",
-        "price": 8999.99,
-        "location": "Gdynia",
-        "image": "https://placeholder.com/canon.jpg",
-        "status": "active",
-        "views": 89,
-        "date": "2024-01-09"
-      },
-      {
-        "id": "10",
-        "name": "Apple Watch Series 8",
-        "description": "GPS + Cellular, nowy",
-        "price": 2299.99,
-        "location": "Bydgoszcz",
-        "image": "https://placeholder.com/watch.jpg",
-        "status": "active",
-        "views": 23,
-        "date": "2024-01-17"
-      },
-      {
-        "id": "11",
-        "name": "Samsung 65\" QLED TV",
-        "description": "Smart TV, 4K, HDR",
-        "price": 4999.99,
-        "location": "Lublin",
-        "image": "https://placeholder.com/tv.jpg",
-        "status": "active",
-        "views": 55,
-        "date": "2024-01-16"
-      },
-      {
-        "id": "12",
-        "name": "DJI Air 2S",
-        "description": "Dron z kamerą 4K",
-        "price": 3999.99,
-        "location": "Białystok",
-        "image": "https://placeholder.com/drone.jpg",
-        "status": "active",
-        "views": 41,
-        "date": "2024-01-15"
-      },
-      {
-        "id": "13",
-        "name": "Microsoft Surface Laptop 4",
-        "description": "16GB RAM, 512GB SSD",
-        "price": 5499.99,
-        "location": "Rzeszów",
-        "image": "https://placeholder.com/surface.jpg",
-        "status": "active",
-        "views": 28,
-        "date": "2024-01-14"
-      }
-    ]
-  }
+  "specialOffers": [
+    {
+      "id": "1",
+      "name": "iPhone 13 Pro",
+      "description": "Nowy, nieużywany telefon",
+      "price": 4299.99,
+      "location": "Warszawa",
+      "image": "https://placeholder.com/iphone13.jpg",
+      "seller": "Jan Kowalski",
+      "date": "2024-01-10",
+      "isSpecial": true
+    },
+    {
+      "id": "2",
+      "name": "MacBook Pro M1",
+      "description": "Stan bardzo dobry, mało używany",
+      "price": 5999.99,
+      "location": "Kraków",
+      "image": "https://placeholder.com/macbook.jpg",
+      "seller": "Anna Nowak",
+      "date": "2024-01-12",
+      "isSpecial": true
+    }
+  ],
+  "saleOffers": [
+    {
+      "id": "3",
+      "name": "Samsung Galaxy S21",
+      "description": "Używany, w dobrym stanie",
+      "price": 2499.99,
+      "location": "Wrocław",
+      "image": "https://placeholder.com/samsung.jpg",
+      "seller": "Piotr Wiśniewski",
+      "date": "2024-01-15",
+      "discount": 20
+    },
+    {
+      "id": "5",
+      "name": "Sony PlayStation 5",
+      "description": "Nowa konsola z dwoma padami",
+      "price": 2799.99,
+      "location": "Poznań",
+      "image": "https://placeholder.com/ps5.jpg",
+      "seller": "Marek Kowalczyk",
+      "date": "2024-01-16",
+      "discount": 15
+    },
+    {
+      "id": "6",
+      "name": "Dell XPS 15",
+      "description": "Laptop dla profesjonalistów",
+      "price": 6499.99,
+      "location": "Łódź",
+      "image": "https://placeholder.com/dell.jpg",
+      "seller": "Tomasz Nowicki",
+      "date": "2024-01-14",
+      "discount": 25
+    }
+  ],
+  "myOffers": [
+    {
+      "id": "4",
+      "name": "iPad Air 2022",
+      "description": "Nowy tablet, na gwarancji",
+      "price": 2799.99,
+      "location": "Gdańsk",
+      "image": "https://placeholder.com/ipad.jpg",
+      "status": "active",
+      "views": 45,
+      "date": "2024-01-08"
+    },
+    {
+      "id": "7",
+      "name": "Monitor LG 32\"",
+      "description": "4K HDR, idealny do gier",
+      "price": 1899.99,
+      "location": "Szczecin",
+      "image": "https://placeholder.com/monitor.jpg",
+      "status": "active",
+      "views": 32,
+      "date": "2024-01-13"
+    },
+    {
+      "id": "8",
+      "name": "Nintendo Switch OLED",
+      "description": "Komplet z grami",
+      "price": 1499.99,
+      "location": "Katowice",
+      "image": "https://placeholder.com/switch.jpg",
+      "status": "active",
+      "views": 67,
+      "date": "2024-01-11"
+    },
+    {
+      "id": "9",
+      "name": "Canon EOS R6",
+      "description": "Aparat mirrorless z obiektywem 24-70mm",
+      "price": 8999.99,
+      "location": "Gdynia",
+      "image": "https://placeholder.com/canon.jpg",
+      "status": "active",
+      "views": 89,
+      "date": "2024-01-09"
+    },
+    {
+      "id": "10",
+      "name": "Apple Watch Series 8",
+      "description": "GPS + Cellular, nowy",
+      "price": 2299.99,
+      "location": "Bydgoszcz",
+      "image": "https://placeholder.com/watch.jpg",
+      "status": "active",
+      "views": 23,
+      "date": "2024-01-17"
+    },
+    {
+      "id": "11",
+      "name": "Samsung 65\" QLED TV",
+      "description": "Smart TV, 4K, HDR",
+      "price": 4999.99,
+      "location": "Lublin",
+      "image": "https://placeholder.com/tv.jpg",
+      "status": "active",
+      "views": 55,
+      "date": "2024-01-16"
+    },
+    {
+      "id": "12",
+      "name": "DJI Air 2S",
+      "description": "Dron z kamerą 4K",
+      "price": 3999.99,
+      "location": "Białystok",
+      "image": "https://placeholder.com/drone.jpg",
+      "status": "active",
+      "views": 41,
+      "date": "2024-01-15"
+    },
+    {
+      "id": "13",
+      "name": "Microsoft Surface Laptop 4",
+      "description": "16GB RAM, 512GB SSD",
+      "price": 5499.99,
+      "location": "Rzeszów",
+      "image": "https://placeholder.com/surface.jpg",
+      "status": "active",
+      "views": 28,
+      "date": "2024-01-14"
+    },
+    {
+      "id": "1737920138654",
+      "name": "Bmw e46",
+      "description": "Stan igla, trzymany pod kocem",
+      "price": 3500,
+      "location": "Kielce",
+      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
+      "date": "2025-01-26T19:35:38.654Z",
+      "status": "active",
+      "views": 0
+    },
+    {
+      "id": "1737920596004",
+      "name": "Blue Yeti USB",
+      "description": "Mikrofon Blue Yeti USB nieuzywany",
+      "price": 479,
+      "location": "Warszawa",
+      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
+      "date": "2025-01-26T19:43:16.004Z",
+      "status": "active",
+      "views": 0
+    },
+    {
+      "id": "1737920850387",
+      "name": "Karta graficzna 4090",
+      "description": "16GB DLSS3 GIGABYTY",
+      "price": 7199,
+      "location": "Krakow",
+      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
+      "date": "2025-01-26T19:47:30.387Z",
+      "status": "active",
+      "views": 0
+    }
+  ]
+}
