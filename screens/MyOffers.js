@@ -1,40 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import offersData from '../data/offers.json';
-
-const MyOfferCard = ({ offer }) => (
-  <TouchableOpacity style={styles.offerCard}>
-    <Image
-      source={{ uri: offer.image || 'https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image' }}
-      style={styles.offerImage}
-    />
-    <View style={styles.offerInfo}>
-      <Text style={styles.offerName}>{offer.name}</Text>
-      <Text style={styles.offerPrice}>{offer.price.toFixed(2)} PLN</Text>
-      <View style={styles.offerStats}>
-        <Text style={styles.offerViews}>👁 {offer.views}</Text>
-        <Text style={[styles.offerStatus,
-          { color: offer.status === 'active' ? '#1a531b' : '#777' }]}>
-          {offer.status}
-        </Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import axios from 'axios';
 
 export default function MyOffers() {
+  const [myOffers, setMyOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMyOffers = async () => {
+      try {
+        const response = await axios.get('http://10.0.2.2:3000/myOffers');
+        setMyOffers(response.data);
+      } catch (error) {
+        console.error('Error fetching my offers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMyOffers();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#1a531b" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Offers</Text>
-      <ScrollView style={styles.scrollView}>
-        {offersData.myOffers.length > 0 ? (
-          offersData.myOffers.map(offer => (
-            <MyOfferCard key={offer.id} offer={offer} />
-          ))
-        ) : (
-          <Text style={styles.noOffers}>No offers available</Text>
+      <FlatList
+        data={myOffers}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.price}>{item.price.toFixed(2)} PLN</Text>
+          </View>
         )}
-      </ScrollView>
+      />
     </View>
   );
 }
@@ -50,55 +58,25 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    paddingHorizontal: 10,
   },
-  scrollView: {
-    flex: 1,
-  },
-  offerCard: {
-    flexDirection: 'row',
+  card: {
     backgroundColor: '#1a1a1a',
-    borderRadius: 10,
+    padding: 15,
     marginBottom: 10,
-    padding: 10,
-  },
-  offerImage: {
-    width: 100,
-    height: 100,
     borderRadius: 5,
   },
-  offerInfo: {
-    flex: 1,
-    marginLeft: 10,
-    justifyContent: 'space-between',
-  },
-  offerName: {
+  name: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
-  offerPrice: {
-    color: '#1a531b',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  offerStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  description: {
+    color: '#ccc',
     marginTop: 5,
   },
-  offerViews: {
-    color: '#777',
-    fontSize: 12,
-  },
-  offerStatus: {
-    fontSize: 12,
+  price: {
+    color: '#1a531b',
+    marginTop: 10,
     fontWeight: 'bold',
-  },
-  noOffers: {
-    color: '#777',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
   },
 });
