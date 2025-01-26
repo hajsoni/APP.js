@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function AllOffers({ navigation }) {
   const [allOffers, setAllOffers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchOffers = async () => {
-      try {
-        const response = await axios.get('http://10.0.2.2:3000/myOffers');
-        setAllOffers(response.data);
-      } catch (error) {
-        console.error('Error fetching offers:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchOffers = async () => {
+        setLoading(true); // Ustawiamy loading na true przed pobraniem danych
+        try {
+          const response = await axios.get('http://10.0.2.2:3000/myOffers');
+          setAllOffers(response.data);
+        } catch (error) {
+          console.error('Error fetching offers:', error);
+        } finally {
+          setLoading(false); // Wyłączamy loading po pobraniu danych
+        }
+      };
 
-    fetchOffers();
-  }, []);
+      fetchOffers();
+    }, [])
+  );
 
   if (loading) {
     return (
