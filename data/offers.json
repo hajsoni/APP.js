@@ -179,6 +179,28 @@
       "date": "2025-01-26T19:47:30.387Z",
       "status": "active",
       "views": 0
+    },
+    {
+      "id": "1737967492435",
+      "name": "obraz",
+      "description": "Obrac Pablo Picassa",
+      "price": 8000,
+      "location": "Warszawa",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FAPP-0d13bbff-460f-4622-b59f-b6a604d14938/ImagePicker/6c03046c-1abd-4762-8c5e-85e86b489665.jpeg",
+      "date": "2025-01-27T08:44:52.435Z",
+      "status": "active",
+      "views": 0
+    },
+    {
+      "id": "1737969496583",
+      "name": "Dywan",
+      "description": "Originally turecki dywan prawie nieuzywany",
+      "price": 75,
+      "location": "Wroclaw",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FAPP-0d13bbff-460f-4622-b59f-b6a604d14938/ImagePicker/ce4a690b-3a3b-4b84-b053-d984f75e0c85.jpeg",
+      "date": "2025-01-27T09:18:16.583Z",
+      "status": "active",
+      "views": 0
     }
   ]
 }

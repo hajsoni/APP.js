@@ -1,12 +1,51 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function AddOffer({ navigation }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [location, setLocation] = useState('');
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission required', 'Permission to access the gallery is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission required', 'Permission to access the camera is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const handleAddOffer = async () => {
     if (!name || !description || !price || !location) {
@@ -20,7 +59,7 @@ export default function AddOffer({ navigation }) {
       description,
       price: parseFloat(price),
       location,
-      image: 'https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image',
+      image: image || 'https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image',
       date: new Date().toISOString(),
       status: 'active',
       views: 0,
@@ -29,7 +68,7 @@ export default function AddOffer({ navigation }) {
     try {
       await axios.post('http://10.0.2.2:3000/myOffers', newOffer);
       Alert.alert('Success', 'Offer added successfully', [
-        { text: 'Add Another', onPress: () => { setName(''); setDescription(''); setPrice(''); setLocation(''); } },
+        { text: 'Add Another', onPress: () => { setName(''); setDescription(''); setPrice(''); setLocation(''); setImage(null); } },
         { text: 'Go to My Offers', onPress: () => navigation.navigate('My Offers') },
       ]);
     } catch {
@@ -44,6 +83,17 @@ export default function AddOffer({ navigation }) {
       <TextInput placeholder="Description" placeholderTextColor="#fff" style={styles.input} value={description} onChangeText={setDescription} />
       <TextInput placeholder="Price" placeholderTextColor="#fff" style={styles.input} keyboardType="numeric" value={price} onChangeText={setPrice} />
       <TextInput placeholder="Localization" placeholderTextColor="#fff" style={styles.input} value={location} onChangeText={setLocation} />
+      
+      <View style={styles.imagePickerContainer}>
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <TouchableOpacity style={styles.button} onPress={pickImage}>
+          <Text style={styles.buttonText}>Choose from Gallery</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={takePhoto}>
+          <Text style={styles.buttonText}>Take a Photo</Text>
+        </TouchableOpacity>
+      </View>
+      
       <TouchableOpacity style={styles.button} onPress={handleAddOffer}>
         <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
@@ -55,6 +105,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000', padding: 20 },
   text: { color: '#fff', fontSize: 18, marginBottom: 20 },
   input: { backgroundColor: '#1a1a1a', color: '#fff', marginBottom: 10, padding: 10, borderRadius: 5 },
-  button: { backgroundColor: '#1a531b', padding: 15, alignItems: 'center', borderRadius: 5 },
+  button: { backgroundColor: '#1a531b', padding: 15, alignItems: 'center', borderRadius: 5, marginBottom: 10 },
   buttonText: { color: '#fff', fontWeight: 'bold' },
+  imagePickerContainer: { marginBottom: 20, alignItems: 'center' },
+  image: { width: 200, height: 200, borderRadius: 10, marginBottom: 10 },
 });

@@ -19,7 +19,7 @@
     "axios": "^1.7.9",
     "expo": "~52.0.23",
     "expo-camera": "~16.0.10",
-    "expo-image-picker": "~16.0.3",
+    "expo-image-picker": "~16.0.4",
     "expo-secure-store": "~14.0.1",
     "expo-sensors": "~14.0.1",
     "expo-status-bar": "~2.0.0",
