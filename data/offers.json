@@ -201,6 +201,39 @@
       "date": "2025-01-27T09:18:16.583Z",
       "status": "active",
       "views": 0
+    },
+    {
+      "id": "1737970659816",
+      "name": "Stolik",
+      "description": "Maly stolik w kolorze jasnego debu",
+      "price": 150,
+      "location": "Wadowice",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FAPP-0d13bbff-460f-4622-b59f-b6a604d14938/ImagePicker/6025a1b9-c77b-4bec-ac85-23a6dd0bb9cf.jpeg",
+      "date": "2025-01-27T09:37:39.816Z",
+      "status": "active",
+      "views": 0
+    },
+    {
+      "id": "1737970789999",
+      "name": "Drzwi",
+      "description": "Drzwi wewnetrzne",
+      "price": 300,
+      "location": "Szczecin",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FAPP-0d13bbff-460f-4622-b59f-b6a604d14938/ImagePicker/c40ec21f-89c7-4782-ae02-f3fb0b72ea0b.jpeg",
+      "date": "2025-01-27T09:39:49.999Z",
+      "status": "active",
+      "views": 0
+    },
+    {
+      "id": "1737971237933",
+      "name": "Rower",
+      "description": "Rower gorski",
+      "price": 150,
+      "location": "Radom",
+      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
+      "date": "2025-01-27T09:47:17.933Z",
+      "status": "active",
+      "views": 0
     }
   ]
 }

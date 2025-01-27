@@ -10,6 +10,14 @@ export default function AddOffer({ navigation }) {
   const [location, setLocation] = useState('');
   const [image, setImage] = useState(null);
 
+  const resetForm = () => {
+    setName('');
+    setDescription('');
+    setPrice('');
+    setLocation('');
+    setImage(null);
+  };
+
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -68,8 +76,14 @@ export default function AddOffer({ navigation }) {
     try {
       await axios.post('http://10.0.2.2:3000/myOffers', newOffer);
       Alert.alert('Success', 'Offer added successfully', [
-        { text: 'Add Another', onPress: () => { setName(''); setDescription(''); setPrice(''); setLocation(''); setImage(null); } },
-        { text: 'Go to My Offers', onPress: () => navigation.navigate('My Offers') },
+        { text: 'Add Another', onPress: resetForm },
+        {
+          text: 'Go to My Offers',
+          onPress: () => {
+            resetForm(); 
+            navigation.navigate('My Offers');
+          },
+        },
       ]);
     } catch {
       Alert.alert('Error', 'Failed to save the offer');
