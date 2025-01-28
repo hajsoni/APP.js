@@ -234,6 +234,17 @@
       "date": "2025-01-27T09:47:17.933Z",
       "status": "active",
       "views": 0
+    },
+    {
+      "id": "1738084860506",
+      "name": "pilka",
+      "description": "Pilka do siatkowki",
+      "price": 35,
+      "location": "37.4220936, -122.083922",
+      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
+      "date": "2025-01-28T17:21:00.506Z",
+      "status": "active",
+      "views": 0
     }
   ]
 }

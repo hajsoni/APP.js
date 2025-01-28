@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 
 export default function AddOffer({ navigation }) {
   const [name, setName] = useState('');
@@ -55,6 +56,19 @@ export default function AddOffer({ navigation }) {
     }
   };
 
+  const getLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'Permission to access location was denied');
+      return;
+    }
+
+    const userLocation = await Location.getCurrentPositionAsync({});
+    const coords = `${userLocation.coords.latitude}, ${userLocation.coords.longitude}`;
+    setLocation(coords);
+    Alert.alert('Location fetched', `Your location is: ${coords}`);
+  };
+
   const handleAddOffer = async () => {
     if (!name || !description || !price || !location) {
       Alert.alert('Error', 'Please fill in all fields');
@@ -97,7 +111,10 @@ export default function AddOffer({ navigation }) {
       <TextInput placeholder="Description" placeholderTextColor="#fff" style={styles.input} value={description} onChangeText={setDescription} />
       <TextInput placeholder="Price" placeholderTextColor="#fff" style={styles.input} keyboardType="numeric" value={price} onChangeText={setPrice} />
       <TextInput placeholder="Localization" placeholderTextColor="#fff" style={styles.input} value={location} onChangeText={setLocation} />
-      
+      <TouchableOpacity style={styles.button} onPress={getLocation}>
+        <Text style={styles.buttonText}>Get Current Location</Text>
+      </TouchableOpacity>
+
       <View style={styles.imagePickerContainer}>
         {image && <Image source={{ uri: image }} style={styles.image} />}
         <TouchableOpacity style={styles.button} onPress={pickImage}>
@@ -107,7 +124,7 @@ export default function AddOffer({ navigation }) {
           <Text style={styles.buttonText}>Take a Photo</Text>
         </TouchableOpacity>
       </View>
-      
+
       <TouchableOpacity style={styles.button} onPress={handleAddOffer}>
         <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
@@ -124,3 +141,4 @@ const styles = StyleSheet.create({
   imagePickerContainer: { marginBottom: 20, alignItems: 'center' },
   image: { width: 200, height: 200, borderRadius: 10, marginBottom: 10 },
 });
+ 
