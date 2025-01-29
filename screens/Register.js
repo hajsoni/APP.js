@@ -15,18 +15,40 @@ export default function Register({ navigation }) {
     }
 
     try {
-      console.log('Saving registration data:', { email, name, surname });
-      await SecureStore.setItemAsync('userEmail', email);
-      await SecureStore.setItemAsync('userPassword', password);
-      await SecureStore.setItemAsync('userName', name);
-      await SecureStore.setItemAsync('userSurname', surname);
+      // Pobierz istniejącą listę użytkowników
+      const existingUsersJson = await SecureStore.getItemAsync('users');
+      const users = existingUsersJson ? JSON.parse(existingUsersJson) : [];
 
-      Alert.alert('Success', 'Account created successfully', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Logowanie')
-        }
-      ]);
+      // Sprawdź, czy użytkownik już istnieje
+      if (users.some(user => user.email === email)) {
+        Alert.alert('Error', 'User with this email already exists');
+        return;
+      }
+
+      // Dodaj nowego użytkownika do listy
+      const newUser = {
+        email,
+        password,
+        name,
+        surname,
+        dateCreated: new Date().toISOString()
+      };
+
+      users.push(newUser);
+
+      // Zapisz zaktualizowaną listę użytkowników
+      await SecureStore.setItemAsync('users', JSON.stringify(users));
+
+      Alert.alert(
+        'Success',
+        'Account created successfully',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Logowanie')
+          }
+        ]
+      );
     } catch (error) {
       console.error('Registration error:', error);
       Alert.alert('Error', 'Failed to create account');
@@ -42,6 +64,8 @@ export default function Register({ navigation }) {
         style={styles.input}
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="PASSWORD"
@@ -90,6 +114,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#fff',
     marginBottom: 20,
     color: '#fff',
+    padding: 10,
   },
   button: {
     width: '80%',

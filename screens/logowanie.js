@@ -20,12 +20,16 @@ export default function Logowanie({ setIsLoggedIn, navigation, savedCredentials 
     }
 
     try {
-      const storedEmail = await SecureStore.getItemAsync('userEmail');
-      const storedPassword = await SecureStore.getItemAsync('userPassword');
+      // Pobierz listę użytkowników
+      const usersJson = await SecureStore.getItemAsync('users');
+      const users = usersJson ? JSON.parse(usersJson) : [];
 
-      console.log('Retrieved stored data:', { storedEmail, storedPassword });
+      // Znajdź użytkownika o podanym emailu i haśle
+      const user = users.find(u => u.email === email && u.password === password);
 
-      if (email === storedEmail && password === storedPassword) {
+      if (user) {
+        // Zapisz dane aktualnie zalogowanego użytkownika
+        await SecureStore.setItemAsync('currentUser', JSON.stringify(user));
         setIsLoggedIn(true);
         Alert.alert('Success', 'Logged in successfully');
       } else {
