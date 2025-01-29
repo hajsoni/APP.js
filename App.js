@@ -145,18 +145,19 @@ function DrawerNavigation() {
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [savedCredentials, setSavedCredentials] = useState(null);
 
-  // Usuńmy automatyczne logowanie przy starcie
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        // Wyczyść dane logowania przy starcie aplikacji
-        await SecureStore.deleteItemAsync('userEmail');
-        await SecureStore.deleteItemAsync('userPassword');
-        setIsLoggedIn(false);
+        const email = await SecureStore.getItemAsync('userEmail');
+        const password = await SecureStore.getItemAsync('userPassword');
+        
+        if (email && password) {
+          setSavedCredentials({ email, password });
+        }
       } catch (error) {
         console.error('Error checking login status:', error);
-        setIsLoggedIn(false);
       } finally {
         setIsLoading(false);
       }
@@ -180,7 +181,13 @@ export default function App() {
         {!isLoggedIn ? (
           <>
             <Stack.Screen name="Logowanie">
-              {(props) => <Logowanie {...props} setIsLoggedIn={setIsLoggedIn} />}
+              {(props) => (
+                <Logowanie 
+                  {...props} 
+                  setIsLoggedIn={setIsLoggedIn}
+                  savedCredentials={savedCredentials}
+                />
+              )}
             </Stack.Screen>
             <Stack.Screen
               name="Register"

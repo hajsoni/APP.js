@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
-export default function Logowanie({ setIsLoggedIn, navigation }) {
+export default function Logowanie({ setIsLoggedIn, navigation, savedCredentials }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    if (savedCredentials) {
+      setEmail(savedCredentials.email);
+      setPassword(savedCredentials.password);
+    }
+  }, [savedCredentials]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -13,7 +20,6 @@ export default function Logowanie({ setIsLoggedIn, navigation }) {
     }
 
     try {
-      console.log('Attempting login with:', { email, password });
       const storedEmail = await SecureStore.getItemAsync('userEmail');
       const storedPassword = await SecureStore.getItemAsync('userPassword');
 
@@ -40,6 +46,8 @@ export default function Logowanie({ setIsLoggedIn, navigation }) {
         style={styles.input}
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="PASSWORD"
@@ -80,6 +88,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#fff',
     marginBottom: 20,
     color: '#fff',
+    padding: 10,
   },
   button: {
     width: '80%',
