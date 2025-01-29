@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
-
-
-
 export default function Register({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,16 +15,21 @@ export default function Register({ navigation }) {
     }
 
     try {
+      console.log('Saving registration data:', { email, name, surname });
       await SecureStore.setItemAsync('userEmail', email);
       await SecureStore.setItemAsync('userPassword', password);
       await SecureStore.setItemAsync('userName', name);
       await SecureStore.setItemAsync('userSurname', surname);
 
-      Alert.alert('Success', 'Account created');
-      navigation.navigate('Logowanie');
+      Alert.alert('Success', 'Account created successfully', [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Logowanie')
+        }
+      ]);
     } catch (error) {
-      console.log('Błąd podczas zapisu w SecureStore:', error);
-      Alert.alert('Error', 'Failed to save data');
+      console.error('Registration error:', error);
+      Alert.alert('Error', 'Failed to create account');
     }
   };
 

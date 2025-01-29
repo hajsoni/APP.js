@@ -5,31 +5,31 @@ import * as SecureStore from 'expo-secure-store';
 export default function Logowanie({ setIsLoggedIn, navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-const handleLogin = async () => {
-  if (!email || !password) {
-    Alert.alert('Error', 'Please fill in all fields');
-    return;
-  }
 
-  try {
-    const storedEmail = await SecureStore.getItemAsync('userEmail');
-    const storedPassword = await SecureStore.getItemAsync('userPassword');
-
-    console.log('Odczytany email:', storedEmail); // Debug
-    console.log('Odczytane hasło:', storedPassword); // Debug
-
-    if (email === storedEmail && password === storedPassword) {
-      setIsLoggedIn(true);
-      Alert.alert('Success', 'Logged in successfully');
-    } else {
-      Alert.alert('Error', 'Invalid email or password');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
     }
-  } catch (error) {
-    console.log('Error reading data:', error); // Debug
-    Alert.alert('Error', 'Failed to read data');
-  }
-};
 
+    try {
+      console.log('Attempting login with:', { email, password });
+      const storedEmail = await SecureStore.getItemAsync('userEmail');
+      const storedPassword = await SecureStore.getItemAsync('userPassword');
+
+      console.log('Retrieved stored data:', { storedEmail, storedPassword });
+
+      if (email === storedEmail && password === storedPassword) {
+        setIsLoggedIn(true);
+        Alert.alert('Success', 'Logged in successfully');
+      } else {
+        Alert.alert('Error', 'Invalid email or password');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Failed to read data');
+    }
+  };
 
   return (
     <View style={styles.container}>
