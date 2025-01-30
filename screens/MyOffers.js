@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, TextInput, Modal, Alert } from 'react-native';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -88,6 +88,7 @@ export default function MyOffers() {
       setMyOffers(response.data);
     } catch (error) {
       console.error('Error fetching my offers:', error);
+      Alert.alert('Error', 'Failed to fetch offers');
     } finally {
       setLoading(false);
     }
@@ -106,50 +107,91 @@ export default function MyOffers() {
 
   const updateOffer = async (updatedOffer) => {
     try {
-      // Wywołanie PUT do API
       await axios.put(`http://10.0.2.2:3000/myOffers/${updatedOffer.id}`, updatedOffer);
-      
-      // Aktualizacja lokalnego stanu
       const updatedOffers = myOffers.map(offer => 
         offer.id === updatedOffer.id ? updatedOffer : offer
       );
       setMyOffers(updatedOffers);
-      
-      // Zamknięcie modalu
       setIsEditModalVisible(false);
       setSelectedOffer(null);
+      Alert.alert('Success', 'Offer updated successfully');
     } catch (error) {
       console.error('Error updating offer:', error);
+      Alert.alert('Error', 'Failed to update the offer');
     }
+  };
+
+  const handleDeleteOffer = (offerId) => {
+    Alert.alert(
+      'Delete Offer',
+      'Are you sure you want to delete this offer?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await axios.delete(`http://10.0.2.2:3000/myOffers/${offerId}`);
+              const updatedOffers = myOffers.filter(offer => offer.id !== offerId);
+              setMyOffers(updatedOffers);
+              Alert.alert('Success', 'Offer deleted successfully');
+            } catch (error) {
+              console.error('Error deleting offer:', error);
+              Alert.alert('Error', 'Failed to delete the offer');
+            }
+          }
+        }
+      ]
+    );
   };
 
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#1a531b" />
+        <ActivityIndicator size="large" color="#4CAF50" />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Offers</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Offers</Text>
+      </View>
+      
       <FlatList
         data={myOffers}
         keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.name}>{item.name}</Text>
-              <TouchableOpacity 
-                style={styles.editButton}
-                onPress={() => handleEditOffer(item)}
-              >
-                <Ionicons name="pencil" size={20} color="#1a531b" />
-              </TouchableOpacity>
+            <View style={styles.cardMain}>
+              <View style={styles.cardContent}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+                <Text style={styles.price}>{item.price.toFixed(2)} PLN</Text>
+              </View>
+              
+              <View style={styles.actionButtons}>
+                <TouchableOpacity 
+                  style={[styles.iconButton, styles.editButton]}
+                  onPress={() => handleEditOffer(item)}
+                >
+                  <Ionicons name="pencil" size={20} color="#fff" />
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.iconButton, styles.deleteButton]}
+                  onPress={() => handleDeleteOffer(item.id)}
+                >
+                  <Ionicons name="trash" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={styles.description}>{item.description}</Text>
-            <Text style={styles.price}>{item.price.toFixed(2)} PLN</Text>
           </View>
         )}
       />
@@ -173,42 +215,71 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-    padding: 10,
   },
-  title: {
+  header: {
+    padding: 20,
+    paddingTop: 10,
+    backgroundColor: '#000',
+  },
+  headerTitle: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+  },
+  listContainer: {
+    padding: 15,
   },
   card: {
     backgroundColor: '#1a1a1a',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 5,
+    borderRadius: 12,
+    marginBottom: 15,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  cardHeader: {
+  cardMain: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    padding: 15,
+  },
+  cardContent: {
+    flex: 1,
+    marginRight: 10,
   },
   name: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1,
+    marginBottom: 8,
   },
   description: {
-    color: '#ccc',
-    marginTop: 5,
+    color: '#B8B9C3',
+    fontSize: 14,
+    marginBottom: 8,
   },
   price: {
-    color: '#1a531b',
-    marginTop: 10,
+    color: '#4CAF50',
+    fontSize: 18,
     fontWeight: 'bold',
   },
+  actionButtons: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    gap: 12,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   editButton: {
-    padding: 5,
+    backgroundColor: '#1a531b',
+  },
+  deleteButton: {
+    backgroundColor: '#8B0000',
   },
   modalOverlay: {
     flex: 1,
@@ -218,7 +289,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#1a1a1a',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 20,
   },
   modalTitle: {
@@ -230,8 +301,8 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#000',
-    borderRadius: 5,
-    padding: 10,
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 15,
     color: '#fff',
     borderWidth: 1,
@@ -249,7 +320,7 @@ const styles = StyleSheet.create({
   modalButton: {
     flex: 1,
     padding: 12,
-    borderRadius: 5,
+    borderRadius: 8,
     marginHorizontal: 5,
     alignItems: 'center',
   },

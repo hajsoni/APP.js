@@ -60,17 +60,6 @@
   ],
   "myOffers": [
     {
-      "id": "4",
-      "name": "iPad Air 2022",
-      "description": "Nowy tablet, na gwarancji",
-      "price": 2799.99,
-      "location": "Gdańsk",
-      "image": "https://placeholder.com/ipad.jpg",
-      "status": "active",
-      "views": 45,
-      "date": "2024-01-08"
-    },
-    {
       "id": "7",
       "name": "Monitor LG 32\"",
       "description": "4K HDR, idealny do gier",
@@ -124,17 +113,6 @@
       "status": "active",
       "views": 55,
       "date": "2024-01-16"
-    },
-    {
-      "id": "12",
-      "name": "DJI Air 2S",
-      "description": "Dron z kamerą 4K",
-      "price": 3999.99,
-      "location": "Białystok",
-      "image": "https://placeholder.com/drone.jpg",
-      "status": "active",
-      "views": 41,
-      "date": "2024-01-15"
     },
     {
       "id": "13",
@@ -221,17 +199,6 @@
       "location": "Szczecin",
       "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FAPP-0d13bbff-460f-4622-b59f-b6a604d14938/ImagePicker/c40ec21f-89c7-4782-ae02-f3fb0b72ea0b.jpeg",
       "date": "2025-01-27T09:39:49.999Z",
-      "status": "active",
-      "views": 0
-    },
-    {
-      "id": "1737971237933",
-      "name": "Rower",
-      "description": "Rower gorski",
-      "price": 150,
-      "location": "Radom",
-      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
-      "date": "2025-01-27T09:47:17.933Z",
       "status": "active",
       "views": 0
     },
