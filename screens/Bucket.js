@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const AddressForm = ({ visible, onClose, onSubmit }) => {
   const [address, setAddress] = useState({
@@ -10,29 +11,46 @@ const AddressForm = ({ visible, onClose, onSubmit }) => {
     postalCode: '',
     phoneNumber: '',
   });
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   const handleSubmit = () => {
-    // Prosta walidacja
     if (!address.street || !address.city || !address.postalCode || !address.phoneNumber) {
-      Alert.alert('Błąd', 'Proszę wypełnić wszystkie pola');
+      Alert.alert('Error', 'Please fill in all address fields');
       return;
     }
-    onSubmit(address);
+    if (!paymentMethod) {
+      Alert.alert('Error', 'Please select a payment method');
+      return;
+    }
+    onSubmit({ ...address, paymentMethod });
   };
 
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={true}
+  const PaymentOption = ({ value, label, icon }) => (
+    <TouchableOpacity 
+      style={[
+        styles.paymentOption,
+        paymentMethod === value && styles.paymentOptionSelected
+      ]}
+      onPress={() => setPaymentMethod(value)}
     >
+      <View style={styles.paymentRadio}>
+        <View style={paymentMethod === value ? styles.paymentRadioSelected : null} />
+      </View>
+      <Ionicons name={icon} size={24} color="#B8B9C3" style={styles.paymentIcon} />
+      <Text style={styles.paymentLabel}>{label}</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Adres dostawy</Text>
+          <Text style={styles.modalTitle}>Delivery Details</Text>
           
+          <Text style={styles.sectionTitle}>Address</Text>
           <TextInput
             style={styles.input}
-            placeholder="Ulica i numer"
+            placeholder="Ulica, numer domu"
             placeholderTextColor="#B8B9C3"
             value={address.street}
             onChangeText={(text) => setAddress({ ...address, street: text })}
@@ -63,13 +81,38 @@ const AddressForm = ({ visible, onClose, onSubmit }) => {
             keyboardType="phone-pad"
           />
 
+          <Text style={styles.sectionTitle}>Payment Method</Text>
+          <View style={styles.paymentOptions}>
+            <PaymentOption 
+              value="card" 
+              label="Karta kredytowa" 
+              icon="card-outline" 
+            />
+            <PaymentOption 
+              value="cash" 
+              label="Gotówka przy odbiorze" 
+              icon="cash-outline" 
+            />
+            <PaymentOption 
+              value="transfer" 
+              label="Przelew krajowy" 
+              icon="wallet-outline" 
+            />
+          </View>
+
           <View style={styles.modalButtons}>
-            <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={onClose}>
-              <Text style={styles.modalButtonText}>Anuluj</Text>
+            <TouchableOpacity 
+              style={[styles.modalButton, styles.cancelButton]} 
+              onPress={onClose}
+            >
+              <Text style={styles.modalButtonText}>Cancel</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={[styles.modalButton, styles.submitButton]} onPress={handleSubmit}>
-              <Text style={styles.modalButtonText}>Kontynuuj</Text>
+            <TouchableOpacity 
+              style={[styles.modalButton, styles.submitButton]} 
+              onPress={handleSubmit}
+            >
+              <Text style={styles.modalButtonText}>Continue</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -89,14 +132,16 @@ const BucketItem = ({ item, onRemove, onBuyNow }) => (
       <Text style={styles.itemDescription} numberOfLines={2}>{item.description}</Text>
       <View style={styles.bottomInfo}>
         <Text style={styles.itemPrice}>{item.price.toFixed(2)} PLN</Text>
-        <Text style={styles.itemLocation}>📍 {item.location}</Text>
+        <Text style={styles.itemLocation}>
+          <Ionicons name="location" size={16} color="#B8B9C3" /> {item.location}
+        </Text>
       </View>
       <TouchableOpacity style={styles.buyButton} onPress={() => onBuyNow(item)}>
-        <Text style={styles.buyButtonText}>KUP TERAZ</Text>
+        <Text style={styles.buyButtonText}>BUY NOW</Text>
       </TouchableOpacity>
     </View>
     <TouchableOpacity onPress={() => onRemove(item.id)} style={styles.removeButton}>
-      <Text style={styles.removeButtonText}>×</Text>
+      <Ionicons name="close" size={20} color="#fff" />
     </TouchableOpacity>
   </View>
 );
@@ -138,11 +183,10 @@ export default function Bucket() {
     setShowAddressForm(true);
   };
 
-  const handlePurchase = async (address) => {
-    // Tutaj możesz dodać logikę przetwarzania zakupu
+  const handlePurchase = async (deliveryDetails) => {
     Alert.alert(
-      'Sukces!',
-      'Twoje zamówienie zostało złożone. Dziękujemy za zakupy!',
+      'Success!',
+      `Order placed successfully!\nPayment method: ${deliveryDetails.paymentMethod}`,
       [
         {
           text: 'OK',
@@ -188,7 +232,7 @@ export default function Bucket() {
         </View>
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyIcon}>🛒</Text>
+          <Ionicons name="cart-outline" size={50} color="#B8B9C3" />
           <Text style={styles.emptyText}>Your bucket is empty</Text>
           <Text style={styles.emptySubText}>Add some items to get started</Text>
         </View>
@@ -207,7 +251,7 @@ export default function Bucket() {
 }
 
 const styles = StyleSheet.create({
-  // Istniejące style...
+  // Główne style kontenera
   container: {
     flex: 1,
     backgroundColor: '#1E2337',
@@ -232,10 +276,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
+
+  // Style dla pojedynczego przedmiotu w koszyku
   bucketItem: {
     flexDirection: 'row',
     backgroundColor: '#2A305A',
-    borderRadius: 15,
+    borderRadius: 12,
     padding: 12,
     marginBottom: 15,
     shadowColor: '#000',
@@ -244,7 +290,68 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  // Nowe style dla formularza adresu
+  itemImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+  },
+  itemInfo: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'space-between',
+  },
+  itemName: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  itemDescription: {
+    color: '#B8B9C3',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  bottomInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  itemPrice: {
+    color: '#4CAF50',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  itemLocation: {
+    color: '#B8B9C3',
+    fontSize: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  // Style dla przycisków
+  buyButton: {
+    backgroundColor: '#1a531b',
+    padding: 8,
+    borderRadius: 8,
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  buyButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  removeButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#FF4444',
+    marginLeft: 10,
+  },
+
+  // Style dla modalnego formularza
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -254,10 +361,11 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#2A305A',
-    borderRadius: 15,
+    borderRadius: 12,
     padding: 20,
     width: '100%',
     maxWidth: 400,
+    maxHeight: '90%',
   },
   modalTitle: {
     color: '#fff',
@@ -266,15 +374,66 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  sectionTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    marginTop: 16,
+  },
   input: {
     backgroundColor: '#1E2337',
-    borderRadius: 10,
+    borderRadius: 8,
     padding: 12,
     marginBottom: 12,
     color: '#fff',
     borderWidth: 1,
-    borderColor: '#4A4D6A',
+    borderColor: '#3D4266',
+    fontSize: 16,
   },
+
+  // Style dla opcji płatności
+  paymentOptions: {
+    marginBottom: 20,
+  },
+  paymentOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E2337',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#3D4266',
+  },
+  paymentOptionSelected: {
+    borderColor: '#4CAF50',
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+  },
+  paymentRadio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paymentRadioSelected: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#4CAF50',
+  },
+  paymentIcon: {
+    marginHorizontal: 12,
+  },
+  paymentLabel: {
+    color: '#fff',
+    fontSize: 16,
+  },
+
+  // Style dla przycisków w modalu
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -283,8 +442,10 @@ const styles = StyleSheet.create({
   modalButton: {
     flex: 1,
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 8,
     marginHorizontal: 5,
+    alignItems: 'center',
+    elevation: 3,
   },
   cancelButton: {
     backgroundColor: '#FF4444',
@@ -294,108 +455,53 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: '#fff',
-    textAlign: 'center',
     fontWeight: 'bold',
-  },
-  // Style dla przycisku "KUP TERAZ"
-  buyButton: {
-    backgroundColor: '#4CAF50',
-    padding: 8,
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  buyButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    fontSize: 16,
   },
 
- itemImage: {
-   width: 100,
-   height: 100,
-   borderRadius: 10,
- },
- itemInfo: {
-   flex: 1,
-   marginLeft: 12,
-   justifyContent: 'space-between',
- },
- itemName: {
-   color: '#fff',
-   fontSize: 18,
-   fontWeight: 'bold',
-   marginBottom: 4,
- },
- itemDescription: {
-   color: '#B8B9C3',
-   fontSize: 14,
-   marginBottom: 8,
- },
- bottomInfo: {
-   flexDirection: 'row',
-   justifyContent: 'space-between',
-   alignItems: 'center',
- },
- itemPrice: {
-   color: '#4CAF50',
-   fontSize: 16,
-   fontWeight: 'bold',
- },
- itemLocation: {
-   color: '#B8B9C3',
-   fontSize: 12,
- },
- removeButton: {
-   justifyContent: 'center',
-   alignItems: 'center',
-   width: 30,
-   height: 30,
-   borderRadius: 15,
-   backgroundColor: '#FF4444',
-   marginLeft: 10,
- },
- removeButtonText: {
-   color: '#fff',
-   fontSize: 20,
-   fontWeight: 'bold',
- },
- totalContainer: {
-   flexDirection: 'row',
-   justifyContent: 'space-between',
-   alignItems: 'center',
-   backgroundColor: '#2A305A',
-   padding: 20,
-   borderRadius: 15,
-   marginTop: 20,
- },
- totalText: {
-   color: '#fff',
-   fontSize: 18,
-   fontWeight: 'bold',
- },
- totalPrice: {
-   color: '#4CAF50',
-   fontSize: 24,
-   fontWeight: 'bold',
- },
- emptyContainer: {
-   flex: 1,
-   justifyContent: 'center',
-   alignItems: 'center',
-   padding: 20,
- },
- emptyIcon: {
-   fontSize: 50,
-   marginBottom: 20,
- },
- emptyText: {
-   color: '#fff',
-   fontSize: 24,
-   fontWeight: 'bold',
-   marginBottom: 10,
- },
- emptySubText: {
-   color: '#B8B9C3',
-   fontSize: 16,
- },
+  // Style dla pustego koszyka
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  emptySubText: {
+    color: '#B8B9C3',
+    fontSize: 16,
+  },
+
+  // Style dla podsumowania
+  totalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#2A305A',
+    padding: 20,
+    borderRadius: 12,
+    marginTop: 20,
+    marginBottom: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  totalText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  totalPrice: {
+    color: '#4CAF50',
+    fontSize: 24,
+    fontWeight: 'bold',
+  }
 });
