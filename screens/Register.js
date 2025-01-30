@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Modal, ScrollView } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -9,10 +9,55 @@ export default function Register({ navigation }) {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+
+  const termsContent = `Terms and Conditions for AuctionPortal
+
+1. Acceptance of Terms
+By accessing and using AuctionPortal, you agree to be bound by these Terms and Conditions.
+
+2. User Registration
+- Users must provide accurate and complete information
+- Users must be at least 18 years old
+- Each user may maintain only one account
+
+3. Auction Rules
+- All items must be accurately described
+- Sellers must have the right to sell listed items
+- Bids are binding contracts
+- Winning bidders must complete the purchase
+
+4. Payments and Fees
+- Payment must be made within 48 hours of auction end
+- Platform fees apply to successful sales
+- All transactions must use our secure payment system
+
+5. Prohibited Items
+- Illegal goods and services
+- Counterfeit items
+- Hazardous materials
+- Stolen property
+
+6. User Conduct
+- No fraudulent activities
+- No harassment of other users
+- No interference with the platform's operation
+
+7. Termination
+We reserve the right to terminate accounts for violation of these terms.
+
+8. Liability
+AuctionPortal is not liable for disputes between users.`;
 
   const handleRegister = async () => {
     if (!email || !password || !name || !surname) {
       Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (!termsAccepted) {
+      Alert.alert('Error', 'Please accept the Terms and Conditions');
       return;
     }
 
@@ -30,7 +75,8 @@ export default function Register({ navigation }) {
         password,
         name,
         surname,
-        dateCreated: new Date().toISOString()
+        dateCreated: new Date().toISOString(),
+        termsAccepted: new Date().toISOString()
       };
 
       users.push(newUser);
@@ -54,6 +100,28 @@ export default function Register({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Modal
+        visible={showTerms}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowTerms(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Terms and Conditions</Text>
+            <ScrollView style={styles.termsScroll}>
+              <Text style={styles.termsText}>{termsContent}</Text>
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowTerms(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.logoContainer}>
         <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
         <Text style={styles.welcomeText}>Create Account</Text>
@@ -105,16 +173,35 @@ export default function Register({ navigation }) {
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
             style={styles.eyeIcon}
           >
-            <Ionicons 
-              name={showPassword ? "eye-outline" : "eye-off-outline"} 
-              size={20} 
-              color="#B8B9C3" 
+            <Ionicons
+              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              size={20}
+              color="#B8B9C3"
             />
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.termsContainer}>
+          <TouchableOpacity
+            style={styles.checkbox}
+            onPress={() => setTermsAccepted(!termsAccepted)}
+          >
+            <Ionicons
+              name={termsAccepted ? "checkbox" : "square-outline"}
+              size={24}
+              color="#4CAF50"
+            />
+          </TouchableOpacity>
+          <View style={styles.termsTextContainer}>
+            <Text style={styles.termsLabel}>I accept the </Text>
+            <TouchableOpacity onPress={() => setShowTerms(true)}>
+              <Text style={styles.termsLink}>Terms and Conditions</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
@@ -183,6 +270,69 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     padding: 10,
+  },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  termsTextContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  termsLabel: {
+    color: '#B8B9C3',
+    fontSize: 14,
+  },
+  termsLink: {
+    color: '#4CAF50',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#2A305A',
+    borderRadius: 12,
+    padding: 20,
+    width: '100%',
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  termsScroll: {
+    marginBottom: 15,
+  },
+  termsText: {
+    color: '#B8B9C3',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  closeButton: {
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   registerButton: {
     backgroundColor: '#1a531b',
