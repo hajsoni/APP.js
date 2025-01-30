@@ -212,6 +212,17 @@
       "date": "2025-01-28T17:21:00.506Z",
       "status": "active",
       "views": 0
+    },
+    {
+      "id": "1738261119386",
+      "name": "VIP ANIA",
+      "description": "ZAPRASZAM",
+      "price": 200,
+      "location": "Kielce",
+      "image": "https://via.placeholder.com/200x200/1a1a1a/ffffff?text=No+Image",
+      "date": "2025-01-30T18:18:39.386Z",
+      "status": "active",
+      "views": 0
     }
   ]
 }
