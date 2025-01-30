@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AddOffer({ navigation }) {
   const [name, setName] = useState('');
@@ -105,40 +106,196 @@ export default function AddOffer({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Add Offer</Text>
-      <TextInput placeholder="Name" placeholderTextColor="#fff" style={styles.input} value={name} onChangeText={setName} />
-      <TextInput placeholder="Description" placeholderTextColor="#fff" style={styles.input} value={description} onChangeText={setDescription} />
-      <TextInput placeholder="Price" placeholderTextColor="#fff" style={styles.input} keyboardType="numeric" value={price} onChangeText={setPrice} />
-      <TextInput placeholder="Localization" placeholderTextColor="#fff" style={styles.input} value={location} onChangeText={setLocation} />
-      <TouchableOpacity style={styles.button} onPress={getLocation}>
-        <Text style={styles.buttonText}>Get Current Location</Text>
-      </TouchableOpacity>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Add Offer</Text>
+        </View>
 
-      <View style={styles.imagePickerContainer}>
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-        <TouchableOpacity style={styles.button} onPress={pickImage}>
-          <Text style={styles.buttonText}>Choose from Gallery</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={takePhoto}>
-          <Text style={styles.buttonText}>Take a Photo</Text>
-        </TouchableOpacity>
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Ionicons name="pricetag-outline" size={20} color="#666" style={styles.inputIcon} />
+            <TextInput 
+              placeholder="Name" 
+              placeholderTextColor="#666" 
+              style={styles.input} 
+              value={name} 
+              onChangeText={setName}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="document-text-outline" size={20} color="#666" style={styles.inputIcon} />
+            <TextInput 
+              placeholder="Description" 
+              placeholderTextColor="#666" 
+              style={[styles.input, styles.textArea]} 
+              value={description} 
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="cash-outline" size={20} color="#666" style={styles.inputIcon} />
+            <TextInput 
+              placeholder="Price" 
+              placeholderTextColor="#666" 
+              style={styles.input} 
+              keyboardType="numeric" 
+              value={price} 
+              onChangeText={setPrice}
+            />
+          </View>
+
+          <View style={styles.locationContainer}>
+            <View style={[styles.inputContainer, styles.locationInput]}>
+              <Ionicons name="location-outline" size={20} color="#666" style={styles.inputIcon} />
+              <TextInput 
+                placeholder="Localization" 
+                placeholderTextColor="#666" 
+                style={styles.input} 
+                value={location} 
+                onChangeText={setLocation}
+              />
+            </View>
+            <TouchableOpacity style={styles.locationButton} onPress={getLocation}>
+              <Ionicons name="navigate" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.imageSection}>
+            {image && (
+              <View style={styles.imagePreviewContainer}>
+                <Image source={{ uri: image }} style={styles.image} />
+              </View>
+            )}
+            
+            <View style={styles.imageButtonsContainer}>
+              <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+                <Ionicons name="images-outline" size={24} color="#fff" />
+                <Text style={styles.buttonText}>Gallery</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
+                <Ionicons name="camera-outline" size={24} color="#fff" />
+                <Text style={styles.buttonText}>Camera</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.submitButton} onPress={handleAddOffer}>
+            <Text style={styles.submitButtonText}>ADD OFFER</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleAddOffer}>
-        <Text style={styles.buttonText}>Add</Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', padding: 20 },
-  text: { color: '#fff', fontSize: 18, marginBottom: 20 },
-  input: { backgroundColor: '#1a1a1a', color: '#fff', marginBottom: 10, padding: 10, borderRadius: 5 },
-  button: { backgroundColor: '#1a531b', padding: 15, alignItems: 'center', borderRadius: 5, marginBottom: 10 },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
-  imagePickerContainer: { marginBottom: 20, alignItems: 'center' },
-  image: { width: 200, height: 200, borderRadius: 10, marginBottom: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: '#1E2337',
+  },
+  content: {
+    padding: 20,
+  },
+  header: {
+    marginBottom: 25,
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    gap: 15,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2A305A',
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: '#3D4266',
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    color: '#fff',
+    padding: 15,
+    fontSize: 16,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  locationInput: {
+    flex: 1,
+  },
+  locationButton: {
+    backgroundColor: '#1a531b',
+    width: 54,
+    height: 54,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageSection: {
+    marginVertical: 10,
+  },
+  imagePreviewContainer: {
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  imageButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  imageButton: {
+    flex: 1,
+    backgroundColor: '#2A305A',
+    padding: 15,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#3D4266',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  submitButton: {
+    backgroundColor: '#1a531b',
+    padding: 18,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
  

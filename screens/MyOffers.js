@@ -214,12 +214,12 @@ export default function MyOffers() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#1E2337',
   },
   header: {
     padding: 20,
     paddingTop: 10,
-    backgroundColor: '#000',
+    backgroundColor: '#1E2337',
   },
   headerTitle: {
     color: '#fff',
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   card: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#2A305A',
     borderRadius: 12,
     marginBottom: 15,
     elevation: 5,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#2A305A',
     borderRadius: 12,
     padding: 20,
   },
@@ -300,13 +300,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#000',
+    backgroundColor: '#1E2337',
     borderRadius: 8,
     padding: 12,
     marginBottom: 15,
     color: '#fff',
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#4A4D6A',
   },
   textArea: {
     height: 100,

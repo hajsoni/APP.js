@@ -87,7 +87,10 @@ export default function MyProfile({ navigation }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView 
+      contentContainerStyle={styles.scrollContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.container}>
         <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
         
@@ -105,69 +108,91 @@ export default function MyProfile({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <TextInput
-          value={userData.name}
-          style={[styles.input, !isEditing && styles.disabledInput]}
-          onChangeText={(text) => setUserData({...userData, name: text})}
-          placeholder="Name"
-          placeholderTextColor="#777"
-          editable={isEditing}
-        />
-        <TextInput
-          value={userData.surname}
-          style={[styles.input, !isEditing && styles.disabledInput]}
-          onChangeText={(text) => setUserData({...userData, surname: text})}
-          placeholder="Surname"
-          placeholderTextColor="#777"
-          editable={isEditing}
-        />
-        <TextInput
-          value={userData.email}
-          style={[styles.input, styles.disabledInput]}
-          placeholder="E-mail"
-          placeholderTextColor="#777"
-          editable={false}
-        />
-
-        <TouchableOpacity
-          style={styles.changePasswordButton}
-          onPress={() => setShowChangePassword(!showChangePassword)}
-        >
-          <Text style={styles.changePasswordText}>Change Password</Text>
-        </TouchableOpacity>
-
-        {showChangePassword && (
-          <View style={styles.passwordContainer}>
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Ionicons name="person-outline" size={20} color="#666" style={styles.inputIcon} />
             <TextInput
-              value={newPassword}
-              style={styles.input}
-              onChangeText={setNewPassword}
-              placeholder="New Password"
-              placeholderTextColor="#777"
-              secureTextEntry
+              value={userData.name}
+              style={[styles.input, !isEditing && styles.disabledInput]}
+              onChangeText={(text) => setUserData({...userData, name: text})}
+              placeholder="Name"
+              placeholderTextColor="#666"
+              editable={isEditing}
             />
-            <TextInput
-              value={confirmNewPassword}
-              style={styles.input}
-              onChangeText={setConfirmNewPassword}
-              placeholder="Confirm New Password"
-              placeholderTextColor="#777"
-              secureTextEntry
-            />
-            <TouchableOpacity 
-              style={styles.button} 
-              onPress={handleChangePassword}
-            >
-              <Text style={styles.buttonText}>SAVE NEW PASSWORD</Text>
-            </TouchableOpacity>
           </View>
-        )}
 
-        {isEditing && (
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>SAVE CHANGES</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="person-outline" size={20} color="#666" style={styles.inputIcon} />
+            <TextInput
+              value={userData.surname}
+              style={[styles.input, !isEditing && styles.disabledInput]}
+              onChangeText={(text) => setUserData({...userData, surname: text})}
+              placeholder="Surname"
+              placeholderTextColor="#666"
+              editable={isEditing}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={20} color="#666" style={styles.inputIcon} />
+            <TextInput
+              value={userData.email}
+              style={[styles.input, styles.disabledInput]}
+              placeholder="E-mail"
+              placeholderTextColor="#666"
+              editable={false}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.changePasswordButton}
+            onPress={() => setShowChangePassword(!showChangePassword)}
+          >
+            <Ionicons name="key-outline" size={20} color="#4CAF50" />
+            <Text style={styles.changePasswordText}>Change Password</Text>
           </TouchableOpacity>
-        )}
+
+          {showChangePassword && (
+            <View style={styles.passwordContainer}>
+              <View style={styles.inputContainer}>
+                <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
+                <TextInput
+                  value={newPassword}
+                  style={styles.input}
+                  onChangeText={setNewPassword}
+                  placeholder="New Password"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
+                <TextInput
+                  value={confirmNewPassword}
+                  style={styles.input}
+                  onChangeText={setConfirmNewPassword}
+                  placeholder="Confirm New Password"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                />
+              </View>
+
+              <TouchableOpacity 
+                style={styles.button} 
+                onPress={handleChangePassword}
+              >
+                <Text style={styles.buttonText}>SAVE NEW PASSWORD</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {isEditing && (
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>SAVE CHANGES</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </ScrollView>
   );
@@ -179,7 +204,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#1E2337',
     alignItems: 'center',
     paddingVertical: 20,
   },
@@ -187,8 +212,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '80%',
-    marginBottom: 20,
+    width: '90%',
+    marginBottom: 30,
+    backgroundColor: '#2A305A',
+    padding: 15,
+    borderRadius: 12,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   headerText: {
     color: '#fff',
@@ -196,44 +229,70 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   editButton: {
-    padding: 5,
+    padding: 8,
+    backgroundColor: '#1E2337',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logo: {
     width: 100,
     height: 100,
     marginBottom: 30,
   },
+  formContainer: {
+    width: '90%',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#2A305A',
+    borderRadius: 12,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    elevation: 2,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
   input: {
-    width: '80%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#fff',
-    marginBottom: 20,
+    flex: 1,
     color: '#fff',
-    padding: 10,
+    padding: 15,
+    fontSize: 16,
   },
   disabledInput: {
     opacity: 0.7,
-    backgroundColor: '#1a1a1a',
-    borderRadius: 5,
   },
   button: {
-    width: '80%',
+    width: '100%',
     backgroundColor: '#1a531b',
     alignItems: 'center',
-    padding: 10,
+    padding: 15,
     marginVertical: 10,
-    borderRadius: 5,
+    borderRadius: 12,
+    elevation: 3,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   changePasswordButton: {
-    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15,
+    padding: 10,
   },
   changePasswordText: {
     color: '#4CAF50',
-    textDecorationLine: 'underline',
+    fontSize: 16,
+    marginLeft: 8,
+    fontWeight: '500',
   },
   passwordContainer: {
     width: '100%',
